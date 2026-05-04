@@ -1,9 +1,9 @@
-<!DOCTYPE html>    
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quanto Team â Bo ok a Meeting</title>
+<title>Quanto Team — Book a Meeting</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -36,7 +36,7 @@
     padding: 40px 24px;
   }
 
-  /* ââââââ Header ââââââ */
+  /* ══════ Header ══════ */
   .header {
     text-align: center;
     margin-bottom: 36px;
@@ -53,7 +53,7 @@
   .header .logo svg { height: 42px; }
   .header p { font-size: 16px; color: var(--q-muted); margin-top: 4px; }
 
-  /* ââ Public attendee pills (no toggles) ââ */
+  /* ── Public attendee pills (no toggles) ── */
   .attendees-public {
     display: flex;
     justify-content: center;
@@ -85,7 +85,7 @@
 
   .pub-pill span { font-size: 14px; font-weight: 500; }
 
-  /* ââââââ Admin Lock Button ââââââ */
+  /* ══════ Admin Lock Button ══════ */
   .admin-lock {
     position: absolute;
     top: 0; right: 0;
@@ -104,7 +104,7 @@
     stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
   }
 
-  /* ââââââ Admin Drawer ââââââ */
+  /* ══════ Admin Drawer ══════ */
   .admin-overlay {
     display: none;
     position: fixed;
@@ -251,7 +251,7 @@
 
   .admin-hint strong { display: block; margin-bottom: 4px; }
 
-  /* ââââââ Main Card ââââââ */
+  /* ══════ Main Card ══════ */
   .card {
     background: var(--q-card);
     border-radius: 20px;
@@ -462,7 +462,7 @@
 <body>
 <div class="container">
 
-  <!-- ââââââ Header ââââââ -->
+  <!-- ══════ Header ══════ -->
   <div class="header">
     <!-- Subtle admin button (only your team knows it's there) -->
     <button class="admin-lock" onclick="openAdmin()" title="Team settings">
@@ -480,7 +480,7 @@
     </div>
     <p>Schedule a meeting with our team</p>
 
-    <!-- Clean public attendee pills â NO toggles -->
+    <!-- Clean public attendee pills — NO toggles -->
     <div class="attendees-public" id="publicPills">
       <div class="pub-pill" data-person="dhruvi">
         <div class="avatar">D</div>
@@ -497,7 +497,7 @@
     </div>
   </div>
 
-  <!-- ââââââ Admin Drawer (hidden, slides in from right) ââââââ -->
+  <!-- ══════ Admin Drawer (hidden, slides in from right) ══════ -->
   <div class="admin-overlay" id="adminOverlay" onclick="closeAdmin()"></div>
   <div class="admin-drawer" id="adminDrawer">
     <div class="admin-drawer-header">
@@ -515,7 +515,7 @@
         <div class="admin-cal-info">
           <div class="name">Dhruvi P.</div>
           <div class="email">dhruvi@tryquanto.com</div>
-          <div class="sync-status on" id="status-dhruvi">Linked â bookings sync</div>
+          <div class="sync-status on" id="status-dhruvi">Linked — bookings sync</div>
         </div>
         <label class="toggle">
           <input type="checkbox" checked onchange="toggleCalendar('dhruvi', this)">
@@ -528,7 +528,7 @@
         <div class="admin-cal-info">
           <div class="name">Anderson G.</div>
           <div class="email">anderson@tryquanto.com</div>
-          <div class="sync-status on" id="status-anderson">Linked â bookings sync</div>
+          <div class="sync-status on" id="status-anderson">Linked — bookings sync</div>
         </div>
         <label class="toggle">
           <input type="checkbox" checked onchange="toggleCalendar('anderson', this)">
@@ -541,7 +541,7 @@
         <div class="admin-cal-info">
           <div class="name">Kajanth</div>
           <div class="email">kajanth@tryquanto.com</div>
-          <div class="sync-status on" id="status-kajanth">Linked â bookings sync</div>
+          <div class="sync-status on" id="status-kajanth">Linked — bookings sync</div>
         </div>
         <label class="toggle">
           <input type="checkbox" checked onchange="toggleCalendar('kajanth', this)">
@@ -552,14 +552,14 @@
       <div class="admin-hint">
         <strong>How this works:</strong>
         When a calendar is <b>linked</b>, their busy times are checked for conflicts and bookings sync to their calendar.<br><br>
-        <b>Unlink</b> someone to stop checking their availability and skip syncing â useful when they're on leave or not needed for certain meetings.
+        <b>Unlink</b> someone to stop checking their availability and skip syncing — useful when they're on leave or not needed for certain meetings.
         <br><br>
         Clients never see these controls.
       </div>
     </div>
   </div>
 
-  <!-- ââââââ Main Card ââââââ -->
+  <!-- ══════ Main Card ══════ -->
   <div class="card">
     <div class="duration-bar" id="durationBar">
       <label>Duration:</label>
@@ -624,14 +624,14 @@
 </div>
 
 <script>
-  // ââââââââââââââ Busy Data (Google Calendar snapshot) ââââââââââââââ
+  // ══════════════ Busy Data (Google Calendar snapshot) ══════════════
   const busyData = {
-    "2026-05-04": { dhruvi:[[11,12],[13.25,14]], anderson:[[10.5,12.5],[15.5,16.5]], kajanth:[[0,24]] },
-    "2026-05-05": { dhruvi:[], anderson:[[9,18.25]], kajanth:[[0,24]] },
-    "2026-05-06": { dhruvi:[], anderson:[[12,13]], kajanth:[[0,24]] },
-    "2026-05-07": { dhruvi:[[10,11]], anderson:[[10,11],[13,14]], kajanth:[[0,24]] },
-    "2026-05-08": { dhruvi:[[11,12],[15.5,16.5]], anderson:[[10,11],[11,12]], kajanth:[[0,24]] },
-    "2026-05-09": { dhruvi:[], anderson:[], kajanth:[[0,24]] },
+    "2026-05-04": { dhruvi:[[11,12],[13.25,14]], anderson:[[10.5,12.5],[15.5,16.5]], kajanth:[] },
+    "2026-05-05": { dhruvi:[], anderson:[[9,18.25]], kajanth:[] },
+    "2026-05-06": { dhruvi:[], anderson:[[12,13]], kajanth:[[10,11]] },
+    "2026-05-07": { dhruvi:[[10,11]], anderson:[[10,11],[13,14]], kajanth:[[14,15]] },
+    "2026-05-08": { dhruvi:[[11,12],[15.5,16.5]], anderson:[[10,11],[11,12]], kajanth:[[9.5,10.5]] },
+    "2026-05-09": { dhruvi:[], anderson:[], kajanth:[[11,12]] },
     "2026-05-11": { dhruvi:[[11,12],[15.5,16.5]], anderson:[[10.5,12.5],[15.5,16.5]], kajanth:[[7,12],[15.5,17]] },
     "2026-05-12": { dhruvi:[[10,11],[16,16.5]], anderson:[[9.5,11.5]], kajanth:[[10.5,11],[15.5,16]] },
     "2026-05-13": { dhruvi:[[10,18]], anderson:[[12,13],[17.5,20.5]], kajanth:[[13,14],[13.5,14.5],[15,16]] },
@@ -644,12 +644,12 @@
     "2026-05-22": { dhruvi:[[13,14]], anderson:[[13,14]], kajanth:[[13,14]] }
   };
 
-  // ââââââââââââââ State ââââââââââââââ
+  // ══════════════ State ══════════════
   let selectedDuration = 30;
   let selectedDate = null;
   let selectedSlot = null;
-  let viewYear = 2026;
-  let viewMonth = 4;
+  let viewYear = new Date().getFullYear();
+  let viewMonth = new Date().getMonth();
 
   const START_HOUR = 9.5;
   const END_HOUR = 18;
@@ -660,7 +660,7 @@
     kajanth:  { active: true, label: 'Kajanth',     color: '#F59E0B' }
   };
 
-  // ââââââââââââââ Admin Drawer ââââââââââââââ
+  // ══════════════ Admin Drawer ══════════════
   function openAdmin() {
     document.getElementById('adminOverlay').classList.add('show');
     document.getElementById('adminDrawer').classList.add('open');
@@ -671,7 +671,7 @@
     document.getElementById('adminDrawer').classList.remove('open');
   }
 
-  // ââââââââââââââ Toggle Calendar (internal) ââââââââââââââ
+  // ══════════════ Toggle Calendar (internal) ══════════════
   function toggleCalendar(person, checkbox) {
     calendarState[person].active = checkbox.checked;
 
@@ -680,11 +680,11 @@
     const status = document.getElementById('status-' + person);
     if (checkbox.checked) {
       row.classList.remove('inactive');
-      status.textContent = 'Linked â bookings sync';
+      status.textContent = 'Linked — bookings sync';
       status.className = 'sync-status on';
     } else {
       row.classList.add('inactive');
-      status.textContent = 'Unlinked â skipped';
+      status.textContent = 'Unlinked — skipped';
       status.className = 'sync-status off';
     }
 
@@ -705,14 +705,14 @@
     return Object.entries(calendarState).filter(([_,v]) => v.active).map(([k]) => k);
   }
 
-  // ââââââââââââââ Duration ââââââââââââââ
+  // ══════════════ Duration ══════════════
   function setDuration(mins) {
     selectedDuration = mins;
     document.querySelectorAll('.dur-btn').forEach(b => b.classList.toggle('active', +b.dataset.dur === mins));
     if (selectedDate) showSlots(selectedDate);
   }
 
-  // ââââââââââââââ Calendar ââââââââââââââ
+  // ══════════════ Calendar ══════════════
   function renderCalendar() {
     const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     document.getElementById('calMonth').textContent = `${months[viewMonth]} ${viewYear}`;
@@ -727,7 +727,8 @@
 
     const firstDay = new Date(viewYear, viewMonth, 1).getDay();
     const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-    const today = new Date(2026, 4, 4);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div'));
 
@@ -745,7 +746,7 @@
         el.onclick = () => selectDate(dateStr, el);
       } else el.classList.add('unavailable');
 
-      if (dateStr === '2026-05-04') el.classList.add('today');
+      if (dateStr === formatDate(today)) el.classList.add('today');
       if (dateStr === selectedDate) el.classList.add('selected');
       grid.appendChild(el);
     }
@@ -754,7 +755,7 @@
   function prevMonth() { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } renderCalendar(); }
   function nextMonth() { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } renderCalendar(); }
 
-  // ââââââââââââââ Availability ââââââââââââââ
+  // ══════════════ Availability ══════════════
   function getAvailableSlots(dateStr) {
     const busy = busyData[dateStr];
     const activeCals = getActiveCalendars();
@@ -777,11 +778,12 @@
   }
 
   function hasAvailability(dateStr) {
-    if (new Date(dateStr + 'T12:00:00') < new Date(2026, 4, 4)) return false;
+    const now = new Date();
+    if (new Date(dateStr + 'T12:00:00') < new Date(now.getFullYear(), now.getMonth(), now.getDate())) return false;
     return getAvailableSlots(dateStr).length > 0;
   }
 
-  // ââââââââââââââ Select Date / Slot ââââââââââââââ
+  // ══════════════ Select Date / Slot ══════════════
   function selectDate(dateStr, el) {
     selectedDate = dateStr; selectedSlot = null;
     document.querySelectorAll('.cal-grid .day').forEach(d => d.classList.remove('selected'));
@@ -801,13 +803,13 @@
     html += `<div class="date-subtitle">${slots.length} slot${slots.length !== 1 ? 's' : ''} &middot; ${selectedDuration} min</div>`;
 
     if (activeCals.length === 0) {
-      html += `<div class="no-slots"><div class="icon">&#9888;&#6503;</div><p>No calendars are linked.<br>An admin needs to link at least one calendar.</p></div>`;
+      html += `<div class="no-slots"><div class="icon">&#9888;&#65039;</div><p>No calendars are linked.<br>An admin needs to link at least one calendar.</p></div>`;
     } else if (slots.length === 0) {
       html += `<div class="no-slots"><div class="icon">&#128533;</div><p>No available slots this day.<br>Try a different date or shorter duration.</p></div>`;
     } else {
       html += '<div class="slot-list">';
       slots.forEach(s => {
-        html += `<button class="slot-btn" onclick="selectSlot(this,${s.start},${s.end})">${formatTime(s.start)} â ${formatTime(s.end)}</button>`;
+        html += `<button class="slot-btn" onclick="selectSlot(this,${s.start},${s.end})">${formatTime(s.start)} – ${formatTime(s.end)}</button>`;
       });
       html += '</div>';
     }
@@ -830,14 +832,14 @@
       const names = activeCals.map(p => calendarState[p].label).join(', ');
 
       document.getElementById('bookingSummary').innerHTML =
-        `&#128197; ${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} &middot; ${formatTime(start)} â ${formatTime(end)} (${selectedDuration} min)<br>` +
+        `&#128197; ${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} &middot; ${formatTime(start)} – ${formatTime(end)} (${selectedDuration} min)<br>` +
         `&#128101; With ${names}`;
 
       document.getElementById('bookingForm').classList.add('show');
     }, 300);
   }
 
-  // ââââââââââââââ Booking ââââââââââââââ
+  // ══════════════ Booking ══════════════
   function cancelBooking() {
     document.getElementById('bookingForm').classList.remove('show');
     document.getElementById('schedulerBody').style.display = 'flex';
@@ -847,6 +849,7 @@
   function confirmBooking() {
     const name = document.getElementById('guestName').value.trim();
     const email = document.getElementById('guestEmail').value.trim();
+    const notes = document.getElementById('guestNotes').value.trim();
     if (!name || !email) { alert('Please enter your name and email.'); return; }
 
     const date = new Date(selectedDate + 'T12:00:00');
@@ -854,49 +857,29 @@
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const activeCals = getActiveCalendars();
     const names = activeCals.map(p => calendarState[p].label).join(', ');
+    const emails = activeCals.map(p => {
+      const emailMap = { dhruvi: 'dhruvi@tryquanto.com', anderson: 'anderson@tryquanto.com', kajanth: 'kajanth@tryquanto.com' };
+      return emailMap[p];
+    }).filter(Boolean);
+
+    // Build Google Calendar event link
+    function toGCalTime(dateStr, hourDecimal) {
+      const d = new Date(dateStr + 'T00:00:00');
+      const h = Math.floor(hourDecimal);
+      const m = Math.round((hourDecimal - h) * 60);
+      d.setHours(h, m, 0, 0);
+      return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    }
+    const startGCal = toGCalTime(selectedDate, selectedSlot.start);
+    const endGCal = toGCalTime(selectedDate, selectedSlot.end);
+    const title = encodeURIComponent(`Meeting with ${name} — Quanto`);
+    const details = encodeURIComponent(`Booked via Quanto Scheduler\n\nGuest: ${name}\nEmail: ${email}${notes ? '\nNotes: ' + notes : ''}`);
+    const attendees = encodeURIComponent([email, ...emails].join(','));
+    const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startGCal}/${endGCal}&details=${details}&add=${attendees}&sf=true&output=xml`;
 
     document.getElementById('bookingForm').classList.remove('show');
     document.getElementById('confirmDetails').innerHTML =
       `<strong>${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}</strong><br>` +
-      `${formatTime(selectedSlot.start)} â ${formatTime(selectedSlot.end)} (${selectedDuration} min)<br>` +
+      `${formatTime(selectedSlot.start)} – ${formatTime(selectedSlot.end)} (${selectedDuration} min)<br>` +
       `With ${names}<br><br>` +
-      `A calendar invite has been sent to <strong>${email}</strong>`;
-
-    document.getElementById('confirmationPanel').classList.add('show');
-  }
-
-  function resetAll() {
-    selectedDate = null; selectedSlot = null;
-    document.getElementById('confirmationPanel').classList.remove('show');
-    document.getElementById('schedulerBody').style.display = 'flex';
-    document.getElementById('durationBar').style.display = 'flex';
-    document.getElementById('guestName').value = '';
-    document.getElementById('guestEmail').value = '';
-    document.getElementById('guestNotes').value = '';
-    document.getElementById('slotsPanel').innerHTML =
-      '<div class="select-day-prompt"><div class="icon">&#128197;</div><p>Select a date to view<br>available time slots</p></div>';
-    renderCalendar();
-  }
-
-  // ââââââââââââââ Helpers ââââââââââââââ
-  function formatDate(d) {
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  }
-
-  function formatTime(h) {
-    const hours = Math.floor(h);
-    const mins = Math.round((h - hours) * 60);
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const h12 = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
-    return `${h12}:${String(mins).padStart(2,'0')} ${ampm}`;
-  }
-
-  // Check URL for ?admin=true auto-open
-  if (new URLSearchParams(window.location.search).get('admin') === 'true') {
-    setTimeout(openAdmin, 500);
-  }
-
-  renderCalendar();
-</script>
-</body>
-</html>
+      `<a href="${gcalUrl}" target="_blank" style="display:inline-block;margin-top:8px;padding:10px 20px;background:var(--q-blue);
