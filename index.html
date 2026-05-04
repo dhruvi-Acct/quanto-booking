@@ -626,8 +626,8 @@
 <script>
   // ══════════════ Busy Data (Google Calendar snapshot) ══════════════
   const busyData = {
-    "2026-05-04": { dhruvi:[[11,12],[13.25,14]], anderson:[[10.5,12.5],[15.5,16.5]], kajanth:[] },
-    "2026-05-05": { dhruvi:[], anderson:[[9,18.25]], kajanth:[] },
+    "2026-05-04": { dhruvi:[[11,12],[13.25,14]], anderson:[[10.5,12.5],[15.5,16.5]], kajanth:[[9,18]] },
+    "2026-05-05": { dhruvi:[], anderson:[[9,18.25]], kajanth:[[9,18]] },
     "2026-05-06": { dhruvi:[], anderson:[[12,13]], kajanth:[[10,11]] },
     "2026-05-07": { dhruvi:[[10,11]], anderson:[[10,11],[13,14]], kajanth:[[14,15]] },
     "2026-05-08": { dhruvi:[[11,12],[15.5,16.5]], anderson:[[10,11],[11,12]], kajanth:[[9.5,10.5]] },
@@ -780,7 +780,8 @@
   function hasAvailability(dateStr) {
     const now = new Date();
     if (new Date(dateStr + 'T12:00:00') < new Date(now.getFullYear(), now.getMonth(), now.getDate())) return false;
-    return getAvailableSlots(dateStr).length > 0;
+    if (!busyData[dateStr]) return false; // No calendar data loaded for this date
+      return getAvailableSlots(dateStr).length > 0;
   }
 
   // ══════════════ Select Date / Slot ══════════════
