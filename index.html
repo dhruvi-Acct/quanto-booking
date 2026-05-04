@@ -70,6 +70,18 @@
     padding: 8px 16px;
     border-radius: 100px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    opacity: 0.55;
+  }
+
+  .pub-pill:hover { opacity: 0.8; }
+
+  .pub-pill.selected {
+    opacity: 1;
+    border-color: var(--q-blue);
+    box-shadow: 0 2px 8px rgba(43,94,167,0.18);
   }
 
   .pub-pill .avatar {
@@ -84,6 +96,10 @@
   .pub-pill:nth-child(3) .avatar { background: var(--q-amber); color: #1E293B; }
 
   .pub-pill span { font-size: 14px; font-weight: 500; }
+
+  .pick-person-hint {
+    font-size: 12px; color: #94A3B8; margin-top: 6px;
+  }
 
   /* ══════ Admin Lock Button ══════ */
   .admin-lock {
@@ -403,6 +419,31 @@
   .form-group textarea:focus { border-color: var(--q-blue); }
   .form-group textarea { resize: vertical; min-height: 80px; }
 
+  .required { color: #EF4444; }
+
+  .form-group input.error { border-color: #EF4444; }
+
+  .team-member-row {
+    display: flex; gap: 8px; margin-bottom: 8px; align-items: center;
+  }
+  .team-member-row input {
+    flex: 1; padding: 10px 14px; border: 1px solid #E2E8F0;
+    border-radius: 10px; font-size: 14px; font-family: inherit;
+  }
+  .team-member-row input:focus { border-color: var(--q-blue); outline: none; }
+  .remove-tm {
+    background: none; border: none; color: #94A3B8; font-size: 18px;
+    cursor: pointer; padding: 4px 8px; border-radius: 6px;
+  }
+  .remove-tm:hover { color: #EF4444; background: #FEF2F2; }
+
+  .add-tm-btn {
+    background: none; border: 1px dashed #CBD5E1; color: #64748B;
+    padding: 8px 16px; border-radius: 10px; font-size: 13px;
+    cursor: pointer; width: 100%; font-family: inherit;
+  }
+  .add-tm-btn:hover { border-color: var(--q-blue); color: var(--q-blue); }
+
   .form-actions { display: flex; gap: 12px; margin-top: 24px; }
 
   .btn-primary {
@@ -480,21 +521,22 @@
     </div>
     <p>Schedule a meeting with our team</p>
 
-    <!-- Clean public attendee pills — NO toggles -->
+    <!-- Click a person to see their availability -->
     <div class="attendees-public" id="publicPills">
-      <div class="pub-pill" data-person="dhruvi">
+      <div class="pub-pill" data-person="dhruvi" onclick="selectPerson('dhruvi', this)">
         <div class="avatar">D</div>
         <span>Dhruvi P.</span>
       </div>
-      <div class="pub-pill" data-person="anderson">
+      <div class="pub-pill" data-person="anderson" onclick="selectPerson('anderson', this)">
         <div class="avatar">A</div>
         <span>Anderson G.</span>
       </div>
-      <div class="pub-pill" data-person="kajanth">
+      <div class="pub-pill" data-person="kajanth" onclick="selectPerson('kajanth', this)">
         <div class="avatar">K</div>
         <span>Kajanth</span>
       </div>
     </div>
+    <div class="pick-person-hint" id="pickHint">Select who you'd like to meet with</div>
   </div>
 
   <!-- ══════ Admin Drawer (hidden, slides in from right) ══════ -->
@@ -565,7 +607,7 @@
       <label>Duration:</label>
       <button class="dur-btn" data-dur="15" onclick="setDuration(15)">15 min</button>
       <button class="dur-btn active" data-dur="30" onclick="setDuration(30)">30 min</button>
-          </div>
+    </div>
 
     <div class="scheduler-body" id="schedulerBody">
       <div class="calendar-side">
@@ -593,15 +635,20 @@
       <h3>Confirm Your Booking</h3>
       <div class="subtitle" id="bookingSummary"></div>
       <div class="form-group">
-        <label>Your Name</label>
-        <input type="text" id="guestName" placeholder="Jane Smith">
+        <label>Your Name <span class="required">*</span></label>
+        <input type="text" id="guestName" placeholder="Jane Smith" required>
       </div>
       <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="guestEmail" placeholder="jane@company.com">
+        <label>Email <span class="required">*</span></label>
+        <input type="email" id="guestEmail" placeholder="jane@company.com" required>
       </div>
       <div class="form-group">
-        <label>Notes (optional)</label>
+        <label>Team Members <span style="font-weight:400;color:#94A3B8;font-size:12px;">(optional, up to 3)</span></label>
+        <div id="teamMembersContainer"></div>
+        <button type="button" class="add-tm-btn" id="addTmBtn" onclick="addTeamMember()">+ Add team member</button>
+      </div>
+      <div class="form-group">
+        <label>Notes <span style="font-weight:400;color:#94A3B8;font-size:12px;">(optional)</span></label>
         <textarea id="guestNotes" placeholder="What would you like to discuss?"></textarea>
       </div>
       <div class="form-actions">
@@ -625,8 +672,8 @@
 <script>
   // ══════════════ Busy Data (Google Calendar snapshot) ══════════════
   const busyData = {
-    "2026-05-04": { dhruvi:[[11,12],[13.25,14]], anderson:[[10.5,12.5],[15.5,16.5]], kajanth:[] },
-    "2026-05-05": { dhruvi:[], anderson:[[9,18.25]], kajanth:[] },
+    "2026-05-04": { dhruvi:[[11,12],[13.25,14]], anderson:[[10.5,12.5],[15.5,16.5]], kajanth:[[9,18]] },
+    "2026-05-05": { dhruvi:[], anderson:[[9,18.25]], kajanth:[[9,18]] },
     "2026-05-06": { dhruvi:[], anderson:[[12,13]], kajanth:[[9,18]] },
     "2026-05-07": { dhruvi:[[10,11]], anderson:[[10,11],[13,14]], kajanth:[[9,18]] },
     "2026-05-08": { dhruvi:[[11,12],[15.5,16.5]], anderson:[[10,11],[11,12]], kajanth:[[9,18]] },
@@ -647,6 +694,7 @@
   let selectedDuration = 30;
   let selectedDate = null;
   let selectedSlot = null;
+  let selectedPerson = null;
   let viewYear = new Date().getFullYear();
   let viewMonth = new Date().getMonth();
 
@@ -704,6 +752,16 @@
     return Object.entries(calendarState).filter(([_,v]) => v.active).map(([k]) => k);
   }
 
+  // ══════════════ Person Selection ══════════════
+  function selectPerson(person, el) {
+    selectedPerson = person;
+    document.querySelectorAll('.pub-pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('pickHint').style.display = 'none';
+    renderCalendar();
+    if (selectedDate) showSlots(selectedDate);
+  }
+
   // ══════════════ Duration ══════════════
   function setDuration(mins) {
     selectedDuration = mins;
@@ -756,12 +814,12 @@
 
   // ══════════════ Availability ══════════════
   function getAvailableSlots(dateStr) {
+    if (!selectedPerson) return [];
     const busy = busyData[dateStr];
-    const activeCals = getActiveCalendars();
-    if (activeCals.length === 0) return [];
-    let allBusy = [];
-    if (busy) activeCals.forEach(p => { if (busy[p]) allBusy.push(...busy[p]); });
-    return generateSlots(allBusy, selectedDuration);
+    if (!busy) return [];
+    // Only check the selected person's busy times
+    let personBusy = busy[selectedPerson] || [];
+    return generateSlots(personBusy, selectedDuration);
   }
 
   function generateSlots(busyPeriods, duration) {
@@ -779,8 +837,9 @@
   function hasAvailability(dateStr) {
     const now = new Date();
     if (new Date(dateStr + 'T12:00:00') < new Date(now.getFullYear(), now.getMonth(), now.getDate())) return false;
-    if (!busyData[dateStr]) return false; // No calendar data loaded for this date
-      return getAvailableSlots(dateStr).length > 0;
+    if (!busyData[dateStr]) return false;
+    if (!selectedPerson) return false;
+    return getAvailableSlots(dateStr).length > 0;
   }
 
   // ══════════════ Select Date / Slot ══════════════
@@ -828,12 +887,11 @@
       const date = new Date(selectedDate + 'T12:00:00');
       const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
       const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const activeCals = getActiveCalendars();
-      const names = activeCals.map(p => calendarState[p].label).join(', ');
+      const personName = calendarState[selectedPerson].label;
 
       document.getElementById('bookingSummary').innerHTML =
         `&#128197; ${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} &middot; ${formatTime(start)} – ${formatTime(end)} (${selectedDuration} min)<br>` +
-        `&#128101; With ${names}`;
+        `&#128101; With ${personName}`;
 
       document.getElementById('bookingForm').classList.add('show');
     }, 300);
@@ -847,20 +905,26 @@
   }
 
   function confirmBooking() {
-    const name = document.getElementById('guestName').value.trim();
-    const email = document.getElementById('guestEmail').value.trim();
+    const nameEl = document.getElementById('guestName');
+    const emailEl = document.getElementById('guestEmail');
+    const name = nameEl.value.trim();
+    const email = emailEl.value.trim();
     const notes = document.getElementById('guestNotes').value.trim();
-    if (!name || !email) { alert('Please enter your name and email.'); return; }
+
+    // Validate required fields
+    nameEl.classList.remove('error');
+    emailEl.classList.remove('error');
+    let hasError = false;
+    if (!name) { nameEl.classList.add('error'); hasError = true; }
+    if (!email || !email.includes('@')) { emailEl.classList.add('error'); hasError = true; }
+    if (hasError) { alert('Please fill in your name and a valid email address.'); return; }
 
     const date = new Date(selectedDate + 'T12:00:00');
     const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const activeCals = getActiveCalendars();
-    const names = activeCals.map(p => calendarState[p].label).join(', ');
-    const emails = activeCals.map(p => {
-      const emailMap = { dhruvi: 'dhruvi@tryquanto.com', anderson: 'anderson@tryquanto.com', kajanth: 'kajanth@tryquanto.com' };
-      return emailMap[p];
-    }).filter(Boolean);
+    const personName = calendarState[selectedPerson].label;
+    const emailMap = { dhruvi: 'dhruvi@tryquanto.com', anderson: 'anderson@tryquanto.com', kajanth: 'kajanth@tryquanto.com' };
+    const hostEmail = emailMap[selectedPerson];
 
     // Build Google Calendar event link
     function toGCalTime(dateStr, hourDecimal) {
@@ -869,51 +933,3 @@
       const m = Math.round((hourDecimal - h) * 60);
       d.setHours(h, m, 0, 0);
       return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-    }
-    const startGCal = toGCalTime(selectedDate, selectedSlot.start);
-    const endGCal = toGCalTime(selectedDate, selectedSlot.end);
-    const title = encodeURIComponent(`Meeting with ${name} — Quanto`);
-    const details = encodeURIComponent(`Booked via Quanto Scheduler\n\nGuest: ${name}\nEmail: ${email}${notes ? '\nNotes: ' + notes : ''}`);
-    const attendees = encodeURIComponent([email, ...emails].join(','));
-    const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startGCal}/${endGCal}&details=${details}&add=${attendees}&sf=true&output=xml`;
-
-    document.getElementById('bookingForm').classList.remove('show');
-    document.getElementById('confirmDetails').innerHTML =
-      `<strong>${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}</strong><br>` +
-      `${formatTime(selectedSlot.start)} – ${formatTime(selectedSlot.end)} (${selectedDuration} min)<br>` +
-      `With ${names}<br><br>` +
-      `<a href="${gcalUrl}" target="_blank" style="display:inline-block;margin-top:8px;padding:10px 20px;background:var(--q-blue);color:white;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;">📅 Add to Google Calendar</a>`;
-    document.getElementById('confirmationPanel').classList.add('show');
-  }
-
-  // ══════════════ Helpers ══════════════
-  function formatTime(h) {
-    const hours = Math.floor(h);
-    const mins = Math.round((h - hours) * 60);
-    const period = hours >= 12 ? 'PM' : 'AM';
-    const h12 = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
-    return `${h12}:${mins.toString().padStart(2,'0')} ${period}`;
-  }
-
-  function formatDate(d) {
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  }
-
-  function resetAll() {
-    selectedDate = null;
-    selectedSlot = null;
-    document.getElementById('confirmationPanel').classList.remove('show');
-    document.getElementById('schedulerBody').style.display = 'flex';
-    document.getElementById('durationBar').style.display = 'flex';
-    document.getElementById('guestName').value = '';
-    document.getElementById('guestEmail').value = '';
-    document.getElementById('guestNotes').value = '';
-    renderCalendar();
-    document.getElementById('slotsPanel').innerHTML = '<div class="select-day-prompt"><div class="icon">📅</div><p>Select a date to view<br>available time slots</p></div>';
-  }
-
-  // Init
-  renderCalendar();
-  </script>
-</body>
-</html>
