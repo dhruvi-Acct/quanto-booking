@@ -882,4 +882,38 @@
       `<strong>${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}</strong><br>` +
       `${formatTime(selectedSlot.start)} – ${formatTime(selectedSlot.end)} (${selectedDuration} min)<br>` +
       `With ${names}<br><br>` +
-      `<a href="${gcalUrl}" target="_blank" style="display:inline-block;margin-top:8px;padding:10px 20px;background:var(--q-blue);
+      `<a href="${gcalUrl}" target="_blank" style="display:inline-block;margin-top:8px;padding:10px 20px;background:var(--q-blue);color:white;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;">📅 Add to Google Calendar</a>`;
+    document.getElementById('confirmationPanel').classList.add('show');
+  }
+
+  // ══════════════ Helpers ══════════════
+  function formatTime(h) {
+    const hours = Math.floor(h);
+    const mins = Math.round((h - hours) * 60);
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const h12 = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+    return `${h12}:${mins.toString().padStart(2,'0')} ${period}`;
+  }
+
+  function formatDate(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function resetAll() {
+    selectedDate = null;
+    selectedSlot = null;
+    document.getElementById('confirmationPanel').classList.remove('show');
+    document.getElementById('schedulerBody').style.display = 'flex';
+    document.getElementById('durationBar').style.display = 'flex';
+    document.getElementById('guestName').value = '';
+    document.getElementById('guestEmail').value = '';
+    document.getElementById('guestNotes').value = '';
+    renderCalendar();
+    document.getElementById('slotsPanel').innerHTML = '<div class="select-day-prompt"><div class="icon">📅</div><p>Select a date to view<br>available time slots</p></div>';
+  }
+
+  // Init
+  renderCalendar();
+  </script>
+</body>
+</html>
