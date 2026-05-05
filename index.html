@@ -521,22 +521,22 @@
     </div>
     <p>Schedule a meeting with our team</p>
 
-    <!-- Click a person to see their availability -->
+    <!-- Team members who will attend -->
     <div class="attendees-public" id="publicPills">
-      <div class="pub-pill" data-person="dhruvi" onclick="selectPerson('dhruvi', this)">
+      <div class="pub-pill selected" data-person="dhruvi">
         <div class="avatar">D</div>
         <span>Dhruvi P.</span>
       </div>
-      <div class="pub-pill" data-person="anderson" onclick="selectPerson('anderson', this)">
+      <div class="pub-pill selected" data-person="anderson">
         <div class="avatar">A</div>
         <span>Anderson G.</span>
       </div>
-      <div class="pub-pill" data-person="kajanth" onclick="selectPerson('kajanth', this)">
+      <div class="pub-pill selected" data-person="kajanth">
         <div class="avatar">K</div>
         <span>Kajanth</span>
       </div>
     </div>
-    <div class="pick-person-hint" id="pickHint">Select who you'd like to meet with</div>
+    <div class="pick-person-hint" id="pickHint" style="display:none"></div>
   </div>
 
   <!-- ══════ Admin Drawer (hidden, slides in from right) ══════ -->
@@ -814,12 +814,16 @@
 
   // ══════════════ Availability ══════════════
   function getAvailableSlots(dateStr) {
-    if (!selectedPerson) return [];
     const busy = busyData[dateStr];
     if (!busy) return [];
-    // Only check the selected person's busy times
-    let personBusy = busy[selectedPerson] || [];
-    return generateSlots(personBusy, selectedDuration);
+    // Merge busy times from ALL active calendars
+    const activeCals = getActiveCalendars();
+    let allBusy = [];
+    for (const person of activeCals) {
+      const personBusy = busy[person] || [];
+      allBusy = allBusy.concat(personBusy);
+    }
+    return generateSlots(allBusy, selectedDuration);
   }
 
   function generateSlots(busyPeriods, duration) {
@@ -838,7 +842,6 @@
     const now = new Date();
     if (new Date(dateStr + 'T12:00:00') < new Date(now.getFullYear(), now.getMonth(), now.getDate())) return false;
     if (!busyData[dateStr]) return false;
-    if (!selectedPerson) return false;
     return getAvailableSlots(dateStr).length > 0;
   }
 
@@ -887,11 +890,9 @@
       const date = new Date(selectedDate + 'T12:00:00');
       const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
       const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const personName = calendarState[selectedPerson].label;
-
       document.getElementById('bookingSummary').innerHTML =
         `&#128197; ${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} &middot; ${formatTime(start)} – ${formatTime(end)} (${selectedDuration} min)<br>` +
-        `&#128101; With ${personName}`;
+        `&#128101; With Quanto Team`;
 
       document.getElementById('bookingForm').classList.add('show');
     }, 300);
@@ -922,9 +923,9 @@
     const date = new Date(selectedDate + 'T12:00:00');
     const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const personName = calendarState[selectedPerson].label;
     const emailMap = { dhruvi: 'dhruvi@tryquanto.com', anderson: 'anderson@tryquanto.com', kajanth: 'kajanth@tryquanto.com' };
-    const hostEmail = emailMap[selectedPerson];
+    const activeCals = getActiveCalendars();
+    const hostEmails = activeCals.map(p => emailMap[p]).filter(Boolean);
 
     // Build Google Calendar event link
     function toGCalTime(dateStr, hourDecimal) {
@@ -946,7 +947,7 @@
     const teamStr = teamMembers.length > 0 ? '\nTeam: ' + teamMembers.map(m => `${m.name} (${m.email})`).join(', ') : '';
     const title = encodeURIComponent(`Meeting with ${name} - Quanto`);
     const details = encodeURIComponent(`Booked via Quanto Scheduler\n\nGuest: ${name}\nEmail: ${email}${teamStr}${notes ? '\nNotes: ' + notes : ''}`);
-    const allAttendees = [email, hostEmail, ...teamMembers.map(m => m.email)].filter(Boolean);
+    const allAttendees = [email, ...hostEmails, ...teamMembers.map(m => m.email)].filter(Boolean);
     const attendees = encodeURIComponent(allAttendees.join(','));
     const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startGCal}/${endGCal}&details=${details}&add=${attendees}&sf=true&output=xml`;
 
@@ -954,7 +955,7 @@
     document.getElementById('confirmDetails').innerHTML =
       `<strong>${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}</strong><br>` +
       `${formatTime(selectedSlot.start)} – ${formatTime(selectedSlot.end)} (${selectedDuration} min)<br>` +
-      `With ${personName}<br><br>` +
+      `With Quanto Team<br><br>` +
       `<a href="${gcalUrl}" target="_blank" style="display:inline-block;margin-top:8px;padding:10px 20px;background:var(--q-blue);color:white;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;">📅 Add to Google Calendar</a>`;
     document.getElementById('confirmationPanel').classList.add('show');
   }
@@ -996,7 +997,6 @@
   function resetAll() {
     selectedDate = null;
     selectedSlot = null;
-    selectedPerson = null;
     document.getElementById('confirmationPanel').classList.remove('show');
     document.getElementById('schedulerBody').style.display = 'flex';
     document.getElementById('durationBar').style.display = 'flex';
@@ -1004,8 +1004,6 @@
     document.getElementById('guestEmail').value = '';
     document.getElementById('guestNotes').value = '';
     document.getElementById('teamMembersContainer').innerHTML = '';
-    document.querySelectorAll('.pub-pill').forEach(p => p.classList.remove('selected'));
-    document.getElementById('pickHint').style.display = '';
     renderCalendar();
     document.getElementById('slotsPanel').innerHTML = '<div class="select-day-prompt"><div class="icon">📅</div><p>Select a date to view<br>available time slots</p></div>';
   }
