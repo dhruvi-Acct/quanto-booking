@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quanto Team — Book a Meeting</title>
+<title>Quanto Team ? Book a Meeting</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -36,7 +36,7 @@
     padding: 40px 24px;
   }
 
-  /* ══════ Header ══════ */
+  /* ?????? Header ?????? */
   .header {
     text-align: center;
     margin-bottom: 36px;
@@ -53,7 +53,7 @@
   .header .logo svg { height: 42px; }
   .header p { font-size: 16px; color: var(--q-muted); margin-top: 4px; }
 
-  /* ── Public attendee pills (no toggles) ── */
+  /* ?? Public attendee pills (no toggles) ?? */
   .attendees-public {
     display: flex;
     justify-content: center;
@@ -101,7 +101,7 @@
     font-size: 12px; color: #94A3B8; margin-top: 6px;
   }
 
-  /* ══════ Admin Lock Button ══════ */
+  /* ?????? Admin Lock Button ?????? */
   .admin-lock {
     position: absolute;
     top: 0; right: 0;
@@ -120,7 +120,7 @@
     stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
   }
 
-  /* ══════ Admin Drawer ══════ */
+  /* ?????? Admin Drawer ?????? */
   .admin-overlay {
     display: none;
     position: fixed;
@@ -267,7 +267,7 @@
 
   .admin-hint strong { display: block; margin-bottom: 4px; }
 
-  /* ══════ Main Card ══════ */
+  /* ?????? Main Card ?????? */
   .card {
     background: var(--q-card);
     border-radius: 20px;
@@ -503,7 +503,7 @@
 <body>
 <div class="container">
 
-  <!-- ══════ Header ══════ -->
+  <!-- ?????? Header ?????? -->
   <div class="header">
     <!-- Subtle admin button (only your team knows it's there) -->
     <button class="admin-lock" onclick="openAdmin()" title="Team settings">
@@ -539,7 +539,7 @@
     <div class="pick-person-hint" id="pickHint" style="display:none"></div>
   </div>
 
-  <!-- ══════ Admin Drawer (hidden, slides in from right) ══════ -->
+  <!-- ?????? Admin Drawer (hidden, slides in from right) ?????? -->
   <div class="admin-overlay" id="adminOverlay" onclick="closeAdmin()"></div>
   <div class="admin-drawer" id="adminDrawer">
     <div class="admin-drawer-header">
@@ -557,7 +557,7 @@
         <div class="admin-cal-info">
           <div class="name">Dhruvi P.</div>
           <div class="email">dhruvi@tryquanto.com</div>
-          <div class="sync-status on" id="status-dhruvi">Linked — bookings sync</div>
+          <div class="sync-status on" id="status-dhruvi">Linked ? bookings sync</div>
         </div>
         <label class="toggle">
           <input type="checkbox" checked onchange="toggleCalendar('dhruvi', this)">
@@ -570,7 +570,7 @@
         <div class="admin-cal-info">
           <div class="name">Anderson G.</div>
           <div class="email">anderson@tryquanto.com</div>
-          <div class="sync-status on" id="status-anderson">Linked — bookings sync</div>
+          <div class="sync-status on" id="status-anderson">Linked ? bookings sync</div>
         </div>
         <label class="toggle">
           <input type="checkbox" checked onchange="toggleCalendar('anderson', this)">
@@ -583,7 +583,7 @@
         <div class="admin-cal-info">
           <div class="name">Kajanth</div>
           <div class="email">kajanth@tryquanto.com</div>
-          <div class="sync-status on" id="status-kajanth">Linked — bookings sync</div>
+          <div class="sync-status on" id="status-kajanth">Linked ? bookings sync</div>
         </div>
         <label class="toggle">
           <input type="checkbox" checked onchange="toggleCalendar('kajanth', this)">
@@ -594,14 +594,14 @@
       <div class="admin-hint">
         <strong>How this works:</strong>
         When a calendar is <b>linked</b>, their busy times are checked for conflicts and bookings sync to their calendar.<br><br>
-        <b>Unlink</b> someone to stop checking their availability and skip syncing — useful when they're on leave or not needed for certain meetings.
+        <b>Unlink</b> someone to stop checking their availability and skip syncing ? useful when they're on leave or not needed for certain meetings.
         <br><br>
         Clients never see these controls.
       </div>
     </div>
   </div>
 
-  <!-- ══════ Main Card ══════ -->
+  <!-- ?????? Main Card ?????? -->
   <div class="card">
     <div class="duration-bar" id="durationBar">
       <label>Duration:</label>
@@ -670,27 +670,52 @@
 </div>
 
 <script>
-  // ══════════════ Busy Data (Google Calendar snapshot) ══════════════
+  // ?????????????? Busy Data (Google Calendar snapshot) ??????????????
   const busyData = {
-    "2026-05-04": { dhruvi:[[11,12],[13.25,14]], anderson:[[10.5,12.5],[15.5,16.5]], kajanth:[[9,18]] },
-    "2026-05-05": { dhruvi:[], anderson:[[9,18.25]], kajanth:[[9,18]] },
-    "2026-05-06": { dhruvi:[], anderson:[[12,13]], kajanth:[[9,18]] },
-    "2026-05-07": { dhruvi:[[10,11]], anderson:[[10,11],[13,14]], kajanth:[[9,18]] },
-    "2026-05-08": { dhruvi:[[11,12],[15.5,16.5]], anderson:[[10,11],[11,12]], kajanth:[[9,18]] },
-    "2026-05-09": { dhruvi:[], anderson:[], kajanth:[[11,12]] },
-    "2026-05-11": { dhruvi:[[11,12],[15.5,16.5]], anderson:[[10.5,12.5],[15.5,16.5]], kajanth:[[7,12],[15.5,17]] },
-    "2026-05-12": { dhruvi:[[10,11],[16,16.5]], anderson:[[9.5,11.5]], kajanth:[[10.5,11],[15.5,16]] },
-    "2026-05-13": { dhruvi:[[10,18]], anderson:[[12,13],[17.5,20.5]], kajanth:[[13,14],[13.5,14.5],[15,16]] },
-    "2026-05-14": { dhruvi:[[10,16.5]], anderson:[[11,12],[14,15]], kajanth:[[10.5,12]] },
-    "2026-05-15": { dhruvi:[[13,14],[16,16.5]], anderson:[[13,14]], kajanth:[[13,14],[15.5,16.5]] },
-    "2026-05-18": { dhruvi:[[11,12]], anderson:[[11,12]], kajanth:[[11,12]] },
-    "2026-05-19": { dhruvi:[[10,11]], anderson:[], kajanth:[[10.5,11]] },
-    "2026-05-20": { dhruvi:[[10,16]], anderson:[[12,13]], kajanth:[[13,14]] },
-    "2026-05-21": { dhruvi:[[10,16]], anderson:[[11,12]], kajanth:[[10.5,12]] },
-    "2026-05-22": { dhruvi:[[13,14]], anderson:[[13,14]], kajanth:[[13,14]] }
-  };
+  "dhruvi": {
+    "2026-05-26": [{ start: 10, end: 14 }],
+    "2026-05-27": [{ start: 11, end: 12 }, { start: 15, end: 18 }],
+    "2026-05-28": [{ start: 10.5, end: 11.5 }, { start: 12, end: 12.5 }, { start: 16, end: 18 }],
+    "2026-05-29": [{ start: 13, end: 15 }],
+    "2026-06-01": [{ start: 11, end: 12 }, { start: 13.5, end: 14 }, { start: 15, end: 15.5 }],
+    "2026-06-02": [{ start: 15, end: 15.5 }],
+    "2026-06-03": [{ start: 11, end: 12 }, { start: 17, end: 17.5 }],
+    "2026-06-04": [{ start: 10.5, end: 11.5 }],
+    "2026-06-05": [{ start: 13, end: 14 }, { start: 15.5, end: 16 }],
+    "2026-06-08": [{ start: 11, end: 12 }, { start: 13.5, end: 14 }, { start: 15, end: 16.5 }],
+    "2026-06-10": [{ start: 11, end: 12 }, { start: 17, end: 17.5 }],
+    "2026-06-11": [{ start: 10.5, end: 11.5 }],
+    "2026-06-12": [{ start: 13, end: 14 }],
+    "2026-06-15": [{ start: 11, end: 12 }, { start: 13.5, end: 14 }, { start: 15, end: 15.5 }]
+  },
+  "anderson": {
+    "2026-06-02": [{ start: 9.5, end: 11 }, { start: 11.5, end: 12 }, { start: 15, end: 17 }],
+    "2026-06-03": [{ start: 11.5, end: 12 }, { start: 17, end: 17.5 }],
+    "2026-06-04": [{ start: 10.5, end: 11.5 }, { start: 14, end: 15 }],
+    "2026-06-05": [{ start: 9.5, end: 10 }, { start: 11, end: 12 }, { start: 12.5, end: 14 }, { start: 15.5, end: 16 }, { start: 17, end: 18 }],
+    "2026-06-08": [{ start: 10.5, end: 12 }, { start: 15.5, end: 16.5 }],
+    "2026-06-10": [{ start: 13, end: 13.5 }],
+    "2026-06-11": [{ start: 10.5, end: 11.5 }, { start: 12, end: 14 }, { start: 16.5, end: 17 }],
+    "2026-06-12": [{ start: 11, end: 12 }, { start: 13, end: 14 }, { start: 15, end: 15.5 }]
+  },
+  "kajanth": {
+    "2026-05-27": [{ start: 11, end: 13 }, { start: 14, end: 14.5 }, { start: 15, end: 16 }],
+    "2026-05-28": [{ start: 10, end: 11.5 }, { start: 12, end: 12.5 }],
+    "2026-05-29": [{ start: 13, end: 15 }],
+    "2026-06-01": [{ start: 11, end: 12 }],
+    "2026-06-02": [{ start: 10.5, end: 11 }, { start: 14, end: 14.5 }],
+    "2026-06-04": [{ start: 10.5, end: 11.5 }],
+    "2026-06-05": [{ start: 11, end: 12 }, { start: 13, end: 14 }],
+    "2026-06-08": [{ start: 11, end: 12 }, { start: 15.5, end: 16.5 }],
+    "2026-06-09": [{ start: 10.5, end: 11 }, { start: 15.5, end: 16 }],
+    "2026-06-10": [{ start: 15, end: 16 }],
+    "2026-06-11": [{ start: 10.5, end: 11.5 }],
+    "2026-06-12": [{ start: 11, end: 12 }, { start: 13, end: 14 }],
+    "2026-06-15": [{ start: 11, end: 12 }, { start: 14.5, end: 15 }]
+  }
+};
 
-  // ══════════════ State ══════════════
+  // ?????????????? State ??????????????
   let selectedDuration = 30;
   let selectedDate = null;
   let selectedSlot = null;
@@ -707,7 +732,7 @@
     kajanth:  { active: true, label: 'Kajanth',     color: '#F59E0B' }
   };
 
-  // ══════════════ Admin Drawer ══════════════
+  // ?????????????? Admin Drawer ??????????????
   function openAdmin() {
     document.getElementById('adminOverlay').classList.add('show');
     document.getElementById('adminDrawer').classList.add('open');
@@ -718,7 +743,7 @@
     document.getElementById('adminDrawer').classList.remove('open');
   }
 
-  // ══════════════ Toggle Calendar (internal) ══════════════
+  // ?????????????? Toggle Calendar (internal) ??????????????
   function toggleCalendar(person, checkbox) {
     calendarState[person].active = checkbox.checked;
 
@@ -727,11 +752,11 @@
     const status = document.getElementById('status-' + person);
     if (checkbox.checked) {
       row.classList.remove('inactive');
-      status.textContent = 'Linked — bookings sync';
+      status.textContent = 'Linked ? bookings sync';
       status.className = 'sync-status on';
     } else {
       row.classList.add('inactive');
-      status.textContent = 'Unlinked — skipped';
+      status.textContent = 'Unlinked ? skipped';
       status.className = 'sync-status off';
     }
 
@@ -752,7 +777,7 @@
     return Object.entries(calendarState).filter(([_,v]) => v.active).map(([k]) => k);
   }
 
-  // ══════════════ Person Selection ══════════════
+  // ?????????????? Person Selection ??????????????
   function selectPerson(person, el) {
     selectedPerson = person;
     document.querySelectorAll('.pub-pill').forEach(p => p.classList.remove('selected'));
@@ -762,14 +787,14 @@
     if (selectedDate) showSlots(selectedDate);
   }
 
-  // ══════════════ Duration ══════════════
+  // ?????????????? Duration ??????????????
   function setDuration(mins) {
     selectedDuration = mins;
     document.querySelectorAll('.dur-btn').forEach(b => b.classList.toggle('active', +b.dataset.dur === mins));
     if (selectedDate) showSlots(selectedDate);
   }
 
-  // ══════════════ Calendar ══════════════
+  // ?????????????? Calendar ??????????????
   function renderCalendar() {
     const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     document.getElementById('calMonth').textContent = `${months[viewMonth]} ${viewYear}`;
@@ -812,7 +837,7 @@
   function prevMonth() { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } renderCalendar(); }
   function nextMonth() { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } renderCalendar(); }
 
-  // ══════════════ Availability ══════════════
+  // ?????????????? Availability ??????????????
   function getAvailableSlots(dateStr) {
     const busy = busyData[dateStr];
     if (!busy) return [];
@@ -845,7 +870,7 @@
     return getAvailableSlots(dateStr).length > 0;
   }
 
-  // ══════════════ Select Date / Slot ══════════════
+  // ?????????????? Select Date / Slot ??????????????
   function selectDate(dateStr, el) {
     selectedDate = dateStr; selectedSlot = null;
     document.querySelectorAll('.cal-grid .day').forEach(d => d.classList.remove('selected'));
@@ -871,7 +896,7 @@
     } else {
       html += '<div class="slot-list">';
       slots.forEach(s => {
-        html += `<button class="slot-btn" onclick="selectSlot(this,${s.start},${s.end})">${formatTime(s.start)} – ${formatTime(s.end)}</button>`;
+        html += `<button class="slot-btn" onclick="selectSlot(this,${s.start},${s.end})">${formatTime(s.start)} ? ${formatTime(s.end)}</button>`;
       });
       html += '</div>';
     }
@@ -891,14 +916,14 @@
       const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
       const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       document.getElementById('bookingSummary').innerHTML =
-        `&#128197; ${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} &middot; ${formatTime(start)} – ${formatTime(end)} (${selectedDuration} min)<br>` +
+        `&#128197; ${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} &middot; ${formatTime(start)} ? ${formatTime(end)} (${selectedDuration} min)<br>` +
         `&#128101; With Quanto Team`;
 
       document.getElementById('bookingForm').classList.add('show');
     }, 300);
   }
 
-  // ══════════════ Booking ══════════════
+  // ?????????????? Booking ??????????????
   function cancelBooking() {
     document.getElementById('bookingForm').classList.remove('show');
     document.getElementById('schedulerBody').style.display = 'flex';
@@ -954,13 +979,13 @@
     document.getElementById('bookingForm').classList.remove('show');
     document.getElementById('confirmDetails').innerHTML =
       `<strong>${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}</strong><br>` +
-      `${formatTime(selectedSlot.start)} – ${formatTime(selectedSlot.end)} (${selectedDuration} min)<br>` +
+      `${formatTime(selectedSlot.start)} ? ${formatTime(selectedSlot.end)} (${selectedDuration} min)<br>` +
       `With Quanto Team<br><br>` +
-      `<a href="${gcalUrl}" target="_blank" style="display:inline-block;margin-top:8px;padding:10px 20px;background:var(--q-blue);color:white;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;">📅 Add to Google Calendar</a>`;
+      `<a href="${gcalUrl}" target="_blank" style="display:inline-block;margin-top:8px;padding:10px 20px;background:var(--q-blue);color:white;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;">? Add to Google Calendar</a>`;
     document.getElementById('confirmationPanel').classList.add('show');
   }
 
-  // ══════════════ Team Members ══════════════
+  // ?????????????? Team Members ??????????????
   function addTeamMember() {
     const container = document.getElementById('teamMembersContainer');
     const count = container.querySelectorAll('.team-member-row').length;
@@ -981,7 +1006,7 @@
     document.getElementById('addTmBtn').style.display = '';
   }
 
-  // ══════════════ Helpers ══════════════
+  // ?????????????? Helpers ??????????????
   function formatTime(h) {
     const hours = Math.floor(h);
     const mins = Math.round((h - hours) * 60);
@@ -1005,7 +1030,7 @@
     document.getElementById('guestNotes').value = '';
     document.getElementById('teamMembersContainer').innerHTML = '';
     renderCalendar();
-    document.getElementById('slotsPanel').innerHTML = '<div class="select-day-prompt"><div class="icon">📅</div><p>Select a date to view<br>available time slots</p></div>';
+    document.getElementById('slotsPanel').innerHTML = '<div class="select-day-prompt"><div class="icon">?</div><p>Select a date to view<br>available time slots</p></div>';
   }
 
   // Init
